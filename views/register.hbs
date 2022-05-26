@@ -1,0 +1,28 @@
+<h1 class="text-center">Registro de usuarios</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form action="/auth/register" method="POST">
+            <div class="form-group">
+                <label for="name">Nombre</label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese nombre...">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese email...">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese contraseña...">
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="confirmPass">Confirme contraseña</label>
+                <input type="password" class="form-control" id="confirmPass" name="confirmPass" placeholder="Ingrese contraseña...">
+            </div>
+            <br>
+            <input type="submit" value="Guardar" class="btn btn-primary">
+        </form>
+    </div>
+</div>
