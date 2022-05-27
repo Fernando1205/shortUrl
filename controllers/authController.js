@@ -45,10 +45,32 @@ const loginForm = async(req, res) => {
     res.render("login");
 }
 
+const loginPost = async(req, res) => {
+
+    const { email, password } = req.body;
+
+    try {
+
+        const user = await User.findOne({ email });
+
+        if (!user) throw new Error('No existe este email');
+
+        if (!user.countConfirm) throw new Error('Cuenta no validada');
+
+        if (!await user.comparePassword(password)) throw new Error('Contraseña no correcta');
+
+        res.redirect('/');
+
+    } catch (error) {
+        console.log(error);
+        res.status(404).send({ error: error.message })
+    }
+}
 
 module.exports = {
     loginForm,
     registerForm,
     registerPost,
-    confirmarCuenta
+    confirmarCuenta,
+    loginPost
 }

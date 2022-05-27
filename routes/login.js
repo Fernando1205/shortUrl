@@ -1,8 +1,9 @@
 const express = require('express');
-const { loginForm, registerForm, registerPost, confirmarCuenta } = require('../controllers/authController');
+const { loginForm, registerForm, registerPost, confirmarCuenta, loginPost } = require('../controllers/authController');
 const router = express.Router();
 
 router.get('/login', loginForm);
+router.post('/login', loginPost);
 router.get('/register', registerForm);
 router.get('/confirmarCuenta/:token', confirmarCuenta);
 router.post('/register', registerPost);
