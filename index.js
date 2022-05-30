@@ -1,6 +1,8 @@
 require('dotenv').config();
 require('./db/db');
 
+const session = require('express-session');
+const flash = require('connect-flash');
 const express = require('express');
 const port = process.env.PORT || 5000;
 const path = require('path');
@@ -12,6 +14,15 @@ const hbs = create({
     extname: ".hbs",
     partialsDir: ["views/components"]
 });
+
+app.use(session({
+    secret: 'pass',
+    resave: false,
+    saveUninitialized: false,
+    name: 'secret-name'
+}));
+
+app.use(flash());
 
 app.engine(".hbs", hbs.engine);
 app.set('view engine', 'hbs');
