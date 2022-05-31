@@ -52,10 +52,10 @@ const editarUrlPost = async(req, res) => {
     let { origin } = req.body;
     try {
         await Url.findByIdAndUpdate(id, { origin });
-        res.redirect('/');
+        return res.redirect('/');
     } catch (error) {
         console.log(error);
-        res.send(error);
+        return res.send(error);
     }
 }
 
@@ -63,10 +63,10 @@ const redireccionamiento = async(req, res) => {
     let { shortUrl } = req.params;
     try {
         const url = await Url.findOne({ shortUrl });
-        res.redirect(url.origin);
+        return res.redirect(url.origin);
     } catch (error) {
         console.log(error);
-        res.send(error);
+        return res.send(error);
     }
 }
 

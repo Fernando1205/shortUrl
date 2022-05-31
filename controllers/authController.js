@@ -3,19 +3,22 @@ const { nanoid } = require('nanoid');
 const { validationResult } = require('express-validator');
 
 const registerForm = (req, res) => {
-    res.render('register');
+    res.render('register', { mensajes: req.flash('mensajes') });
 }
 
 const registerPost = async(req, res) => {
 
     const errors = validationResult(req);
 
-    if (errors.isEmpty) {
-        return res.json(errors);
+    if (!errors.isEmpty()) {
+        req.flash("mensajes", errors.array());
+        return res.redirect('/auth/register');
     }
 
     const { name, email, password } = req.body;
+
     try {
+
         const user = await User.findOne({ email });
         if (user) throw new Error('Ya existe el usuario');
 
@@ -24,24 +27,33 @@ const registerPost = async(req, res) => {
 
         // Enviar correo electrónico con confirmación cuenta
 
+        req.flash('mensajes', { msg: "Revisa tu correo electrónico y valida tu cuenta" });
         res.redirect('/auth/login');
+
     } catch (error) {
-        console.log(error);
-        res.status(404).json({ error: error.message });
+        req.flash('mensajes', [{ msg: error.message }]);
+        return res.redirect('/auth/register');
     }
 }
 
 const confirmarCuenta = async(req, res) => {
+
     const { token } = req.params;
+
     try {
+
         const user = await User.findOne({ tokenConfirm: token });
+
         if (!user) throw new Error('No existe el usuario');
 
         user.countConfirm = true;
         user.tokenConfirm = null;
 
         await user.save();
+
+        req.flash('mensajes', { msg: "Cuenta verificada" });
         res.redirect('/auth/login');
+
     } catch (error) {
         console.log(error);
         res.status(404).json({ error: error.message });
@@ -49,15 +61,16 @@ const confirmarCuenta = async(req, res) => {
 }
 
 const loginForm = async(req, res) => {
-    res.render("login");
+    res.render("login", { mensajes: req.flash('mensajes') });
 }
 
 const loginPost = async(req, res) => {
 
     const errors = validationResult(req);
 
-    if (errors.isEmpty) {
-        res.json(errors);
+    if (!errors.isEmpty()) {
+        req.flash("mensajes", errors.array());
+        return res.redirect('/auth/login');
     }
 
     const { email, password } = req.body;
@@ -72,11 +85,11 @@ const loginPost = async(req, res) => {
 
         if (!await user.comparePassword(password)) throw new Error('Contraseña no correcta');
 
-        res.redirect('/');
+        return res.redirect('/');
 
     } catch (error) {
-        console.log(error);
-        res.status(404).send({ error: error.message })
+        req.flash('mensajes', [{ msg: error.message }]);
+        return res.redirect('/auth/login');
     }
 }
 
