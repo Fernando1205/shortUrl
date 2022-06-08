@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const { nanoid } = require('nanoid');
 const { validationResult } = require('express-validator');
+const router = require('../routes/home');
 
 const registerForm = (req, res) => {
     res.render('register', { mensajes: req.flash('mensajes') });
@@ -85,7 +86,13 @@ const loginPost = async(req, res) => {
 
         if (!await user.comparePassword(password)) throw new Error('Contraseña no correcta');
 
-        return res.redirect('/');
+        // CREANDO SESIÓN USARIO POR PASSPORT
+        req.login(user, function(err) {
+
+            if (err) throw new Error('Error al crear sesión');
+            return res.redirect('/');
+
+        });
 
     } catch (error) {
         req.flash('mensajes', [{ msg: error.message }]);
@@ -93,10 +100,18 @@ const loginPost = async(req, res) => {
     }
 }
 
+const logout = async(req, res) => {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/');
+    });
+}
+
 module.exports = {
     loginForm,
     registerForm,
     registerPost,
     confirmarCuenta,
-    loginPost
+    loginPost,
+    logout
 }

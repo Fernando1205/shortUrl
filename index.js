@@ -4,9 +4,11 @@ require('./db/db');
 const session = require('express-session');
 const flash = require('connect-flash');
 const express = require('express');
+const passport = require('passport');
 const port = process.env.PORT || 5000;
 const path = require('path');
 const { create } = require('express-handlebars');
+
 
 const app = express();
 
@@ -23,6 +25,19 @@ app.use(session({
 }));
 
 app.use(flash());
+
+// CONFIGURACIÓN DE PASSPORT
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+    done(null, { id: user._id, userName: user.userName })
+});
+
+passport.deserializeUser(async(user, done) => {
+
+    return done(null, user);
+})
 
 app.engine(".hbs", hbs.engine);
 app.set('view engine', 'hbs');
