@@ -11,13 +11,14 @@ const urlValidar = (req, res, next) => {
             ) {
                 return next();
             }
+            throw new Error('Tiene que tener https:// 😯');
         }
 
         throw new Error('no válida 😯');
 
     } catch (error) {
-        console.log(error);
-        return res.send('url no válida');
+        req.flash("mensajes", [{ msg: error.message }]);
+        return res.redirect('/');
     }
 }
 

@@ -5,7 +5,7 @@ const { nanoid } = require('nanoid');
 const leerUrls = async(req, res) => {
     try {
         let urls = await Url.find().lean();
-        res.render("home", { urls });
+        res.render("home", { urls, mensajes: req.flash('mensajes') });
     } catch (error) {
         console.log(`Error ${error}`);
         res.send(error);
